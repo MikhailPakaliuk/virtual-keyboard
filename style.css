@@ -27,7 +27,7 @@ html {
     padding: 0.5rem;
     padding-left: 0.5rem;
     padding-bottom: 0;
-    background: #A79F9F;
+    background: radial-gradient(100% 215.42% at 10% 10%, #84228094 15%, #262425 120%), #33041ce6;
     border: 3px solid #222222;
     border-radius: 0.5rem
 }
