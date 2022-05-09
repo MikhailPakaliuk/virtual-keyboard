@@ -5,15 +5,15 @@ const keysRu = [
   ['Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', '.', '▲', 'Shift'],
   ['Ctrl', 'Win', 'Alt', ' ', 'Alt', '◄', '▼', '►', 'Ctrl'],
 ];
-/*
- const keysRuSmall = [
+
+const keysRuSmall = [
   ['ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace'],
   ['Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '/', 'Del'],
   ['CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter'],
   ['Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', '▲', 'Shift'],
   ['Ctrl', 'Win', 'Alt', ' ', 'Alt', '◄', '▼', '►', 'Ctrl'],
 ];
-*/
+
 const keysEn = [
   ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
   ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', 'Del'],
@@ -22,13 +22,13 @@ const keysEn = [
   ['Ctrl', 'Win', 'Alt', ' ', 'Alt', '◄', '▼', '►', 'Ctrl'],
 ];
 
-/* const keysEnSmall = [
+const keysEnSmall = [
   ['~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Backspace'],
   ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '|', 'Del'],
   ['CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '"', 'Enter'],
   ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '<', '>', '?', '▲', 'Shift'],
   ['Ctrl', 'Win', 'Alt', ' ', 'Alt', '◄', '▼', '►', 'Ctrl'],
-]; */
+];
 
 const codes = [
   ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'],
@@ -75,9 +75,19 @@ let IsEnglish = false;
       span.innerHTML = keysRu[i][j];
 
       span = document.createElement('span');
+      span.classList.add('ru_small');
+      key.append(span);
+      span.innerHTML = keysRuSmall[i][j];
+
+      span = document.createElement('span');
       span.classList.add('en');
       key.append(span);
       span.innerHTML = keysEn[i][j];
+
+      span = document.createElement('span');
+      span.classList.add('en_small');
+      key.append(span);
+      span.innerHTML = keysEnSmall[i][j];
     }
   }
 
@@ -88,34 +98,53 @@ let IsEnglish = false;
 
   const leng = document.createElement('p');
   wrapper.append(leng);
-  leng.innerHTML = 'Для переключения языка комбинация: левыe ctrl + shift';
+  leng.innerHTML = 'Для переключения языка комбинация: левыe shift + ctrl';
   leng.classList.add('language');
 }());
 
 let el = null;
 const textarea = document.getElementsByClassName('textarea')[0];
+let isCapsLockPressed = false;
 let isShiftPressed = false;
 let isControlPressed = false;
 
 const button = document.querySelectorAll('.key');
 
 document.querySelectorAll('.en').forEach((x) => x.classList.add('invisible'));
+document.querySelectorAll('.en_small').forEach((x) => x.classList.add('invisible'));
+document.querySelectorAll('.ru').forEach((x) => x.classList.add('invisible'));
 
 function LanguageSwitch() {
   if (IsEnglish) {
     localStorage.setItem('SetEnglish', false);
-    document.querySelectorAll('.en').forEach((x) => x.classList.add('invisible'));
-    document.querySelectorAll('.ru').forEach((x) => x.classList.remove('invisible'));
+    document.querySelectorAll('.en_small').forEach((x) => x.classList.add('invisible'));
+    document.querySelectorAll('.ru_small').forEach((x) => x.classList.remove('invisible'));
     IsEnglish = false;
   } else {
     localStorage.setItem('SetEnglish', true);
-    document.querySelectorAll('.en').forEach((x) => x.classList.remove('invisible'));
-    document.querySelectorAll('.ru').forEach((x) => x.classList.add('invisible'));
+    document.querySelectorAll('.en_small').forEach((x) => x.classList.remove('invisible'));
+    document.querySelectorAll('.ru_small').forEach((x) => x.classList.add('invisible'));
     IsEnglish = true;
   }
 }
 
-function KeepStateCtrlShift() {
+function KeepStateShiftCtrl() {
+  const choiceLang = IsEnglish ? 'en' : 'ru';
+
+  if (el.innerText === 'CapsLock') {
+    if (isCapsLockPressed) {
+      el.classList.remove('pressed');
+      document.querySelectorAll(`.${choiceLang}`).forEach((x) => x.classList.add('invisible'));
+      document.querySelectorAll(`.${choiceLang}_small`).forEach((x) => x.classList.remove('invisible'));
+      isCapsLockPressed = false;
+    } else {
+      document.querySelectorAll(`.${choiceLang}`).forEach((x) => x.classList.remove('invisible'));
+      document.querySelectorAll(`.${choiceLang}_small`).forEach((x) => x.classList.add('invisible'));
+      isCapsLockPressed = true;
+    }
+    return;
+  }
+
   if (el.innerText === 'Shift') {
     if (isShiftPressed) {
       el.classList.remove('pressed');
@@ -147,7 +176,7 @@ function KeepStateCtrlShift() {
 function KeyboardEventHandling(event) {
   const { code } = event;
   if (event.type === 'keyup') {
-    document.onkeyup = KeepStateCtrlShift;
+    document.onkeyup = KeepStateShiftCtrl;
   }
   for (let i = 0; i < codes.length; i += 1) {
     for (let j = 0; j < codes[i].length; j += 1) {
@@ -202,7 +231,8 @@ function MouseEventHandling(event) {
     }
 
     el.classList.add('pressed');
-    document.onmouseup = KeepStateCtrlShift;
+    document.onmouseup = KeepStateShiftCtrl;
+
 
     if (el.classList.contains('Backspace')) {
       PressedBackspace();

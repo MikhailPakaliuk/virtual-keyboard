@@ -44,13 +44,15 @@ html {
 
 .row :hover {
     border: 0.5rem outset;
-    padding-top: 0.5rem;
 }
 
 .key {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem;
     grid-column-end: span 3;
     text-align: center;
-    padding-top: 1rem;
     background-color: #444444;
     border: solid;
     border-color: #444444;
