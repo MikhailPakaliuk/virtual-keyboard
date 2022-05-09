@@ -103,7 +103,7 @@ let IsEnglish = false;
 }());
 
 let el = null;
-const textarea = document.getElementsByClassName('textarea')[0];
+const textarea = document.querySelector('.textarea');
 let isCapsLockPressed = false;
 let isShiftPressed = false;
 let isControlPressed = false;
@@ -128,9 +128,11 @@ function LanguageSwitch() {
   }
 }
 
-function KeepStateShiftCtrl() {
+function KeepStateCapsShiftCtrl() {
   const choiceLang = IsEnglish ? 'en' : 'ru';
-
+  if (el.innerText === 'Tab') {
+    el.classList.remove('pressed');
+  }
   if (el.innerText === 'CapsLock') {
     if (isCapsLockPressed) {
       el.classList.remove('pressed');
@@ -176,12 +178,12 @@ function KeepStateShiftCtrl() {
 function KeyboardEventHandling(event) {
   const { code } = event;
   if (event.type === 'keyup') {
-    document.onkeyup = KeepStateShiftCtrl;
+    document.onkeyup = KeepStateCapsShiftCtrl;
   }
   for (let i = 0; i < codes.length; i += 1) {
     for (let j = 0; j < codes[i].length; j += 1) {
       if (code === codes[i][j]) {
-        el = document.getElementsByClassName(`key ${code}`)[0];
+        el = document.querySelector(`.key.${code}`);
         el.classList.add('pressed');
       }
     }
@@ -208,18 +210,22 @@ function PressedDelete() {
 function PressedEnter() {
   if (el.classList.contains('Enter')) {
     textarea.setRangeText('\n', textarea.selectionStart, textarea.selectionEnd);
+    textarea.focus();
   }
 }
 
 function PressedSpace() {
   if (el.classList.contains('Space')) {
     textarea.setRangeText(' ', textarea.selectionStart, textarea.selectionEnd, 'end');
+    textarea.focus();
   }
 }
 
 function PressedTab() {
   if (el.classList.contains('Tab')) {
-    textarea.value += '   ';
+    el.returnValue = false;
+    textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
+    textarea.focus();
   }
 }
 
@@ -231,8 +237,7 @@ function MouseEventHandling(event) {
     }
 
     el.classList.add('pressed');
-    document.onmouseup = KeepStateShiftCtrl;
-
+    document.onmouseup = KeepStateCapsShiftCtrl;
 
     if (el.classList.contains('Backspace')) {
       PressedBackspace();
