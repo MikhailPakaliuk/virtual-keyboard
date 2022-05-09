@@ -130,9 +130,7 @@ function LanguageSwitch() {
 
 function KeepStateCapsShiftCtrl() {
   const choiceLang = IsEnglish ? 'en' : 'ru';
-  if (el.innerText === 'Tab') {
-    el.classList.remove('pressed');
-  }
+
   if (el.innerText === 'CapsLock') {
     if (isCapsLockPressed) {
       el.classList.remove('pressed');
@@ -169,6 +167,7 @@ function KeepStateCapsShiftCtrl() {
     }
     if (isShiftPressed && isControlPressed) {
       LanguageSwitch();
+      el.classList.remove('pressed');
     }
     return;
   }
@@ -281,3 +280,10 @@ for (let i = 0; i < button.length; i += 1) {
 if (localStorage.getItem('SetEnglish') === 'true') {
   LanguageSwitch();
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Tab') {
+    event.preventDefault();
+    PressedTab();
+  }
+});
