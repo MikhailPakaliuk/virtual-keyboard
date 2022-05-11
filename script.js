@@ -178,11 +178,45 @@ function KeyboardEventHandling(event) {
   const { code } = event;
   if (event.type === 'keyup') {
     document.onkeyup = KeepStateCapsShiftCtrl;
+    
+    if (el.classList.contains('Backspace')) {
+      PressedBackspace();
+      return;
+    }
+    if (el.classList.contains('Delete')) {
+      PressedDelete();
+      return;
+    }
+    if (el.classList.contains('Enter')) {
+      PressedEnter();
+      return;
+    }
+    if (el.classList.contains('Space')) {
+      PressedSpace();
+      return;
+    }
   }
+
   for (let i = 0; i < codes.length; i += 1) {
     for (let j = 0; j < codes[i].length; j += 1) {
       if (code === codes[i][j]) {
+
         el = document.querySelector(`.key.${code}`);
+        event.preventDefault();
+
+        if (el.classList.contains('pressed') && !(el.innerText === 'Backspace'
+          || el.innerText === 'Ctrl'
+          || el.innerText === 'Shift'
+          || el.innerText === 'Tab'
+          || el.innerText === 'CapsLock'
+          || el.innerText === 'Alt'
+          || el.innerText === 'Del'
+          || el.innerText === 'Win'
+          || el.innerText === 'Enter')) {
+
+          textarea.value += `${el.innerText}`;
+        }
+
         el.classList.add('pressed');
       }
     }
