@@ -193,7 +193,7 @@ document.querySelector('.textarea').onkeyup = KeyboardEventHandling;
 document.querySelector('.textarea').onkeydown = KeyboardEventHandling;
 
 function PressedBackspace() {
-  if (el.classList.contains('Backspace')) {
+  if (el.classList.contains('Backspace') && textarea.selectionStart > 0) {
     textarea.setRangeText('', textarea.selectionStart - 1, textarea.selectionEnd);
     textarea.focus();
   }
