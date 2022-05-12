@@ -142,6 +142,7 @@ function KeepStateCapsShiftCtrl() {
       document.querySelectorAll(`.${choiceLang}_small`).forEach((x) => x.classList.add('invisible'));
       isCapsLockPressed = true;
     }
+
     return;
   }
 
@@ -152,7 +153,10 @@ function KeepStateCapsShiftCtrl() {
     } else {
       isShiftPressed = true;
     }
-    if (isShiftPressed && isControlPressed) {
+    if (isShiftPressed && isCapsLockPressed) {
+      el.classList.remove('pressed');
+      isShiftPressed = false;
+    } else if (isShiftPressed && isControlPressed) {
       LanguageSwitch();
     }
     return;
@@ -169,9 +173,7 @@ function KeepStateCapsShiftCtrl() {
       LanguageSwitch();
       el.classList.remove('pressed');
     }
-    return;
   }
-  el.classList.remove('pressed');
 }
 
 function PressedBackspace() {
